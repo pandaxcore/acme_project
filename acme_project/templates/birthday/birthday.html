@@ -1,20 +1,31 @@
 <!-- templates/birthday/birthday.html -->
-{% extends "base.html" %}
+{% extends 'base.html' %}
 <!-- Подключаем библиотеку django_bootstrap5. -->
 {% load django_bootstrap5 %}
 
 {% block content %}
-<div class="card col-4">
-  <div class="card-header">
-    Калькулятор ожидания дня рождения
+  <div class="card col-4">
+    <div class="card-header">Калькулятор ожидания дня рождения</div>
+    <div class="card-body">
+      <!-- Укажите метод отправки запроса. -->
+      <form method="post">
+        <!-- Добавьте тег csrf_token. Без него POST-запрос будет отклонён. -->
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% bootstrap_button button_type='submit' content='Отправить' %}
+      </form>
+      {% with data=form.instance %}
+        {% if form.is_valid %}
+          ID новой записи в БД: {{ data.id }}
+          <hr />
+          <h2>Привет, {{ data.first_name }} {{ data.last_name }}</h2>
+          {% if birthday_countdown == 0 %}
+            <p>С днём рождения!</p>
+          {% else %}
+            <p>Осталось дней до дня рождения: {{ birthday_countdown }}!</p>
+          {% endif %}
+        {% endif %}
+      {% endwith %}
+    </div>
   </div>
-  <div class="card-body">
-    <form>
-      <!-- Выводим поля формы с помощью специального тега. -->
-      {% bootstrap_form form %}
-      <!-- Добавляем кнопку отправки данных. -->
-      {% bootstrap_button button_type="submit" content="Отправить" %}
-    </form>
-  </div>
-</div>
 {% endblock %}
