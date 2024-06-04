@@ -22,7 +22,8 @@ class BirthdayForm(forms.ModelForm):
         """Docstring."""
 
         model = Birthday
-        fields = "__all__"
+        # fields = "__all__"
+        exclude = ('author',)
         widgets = {"birthday": forms.DateInput(attrs={"type": "date"})}
 
     def clean_first_name(self):

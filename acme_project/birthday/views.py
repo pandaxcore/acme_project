@@ -10,6 +10,9 @@ from django.urls import reverse_lazy
 from .forms import BirthdayForm
 from .models import Birthday
 from .utils import calculate_birthday_countdown
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # Создаём миксин.
@@ -27,7 +30,7 @@ class BirthdayFormMixin:
     template_name = 'birthday/birthday.html'
 
 
-class BirthdayUpdateView(BirthdayMixin, UpdateView):
+class BirthdayUpdateView(LoginRequiredMixin, BirthdayMixin, UpdateView):
     """Docstring."""
 
     model = Birthday
@@ -36,15 +39,22 @@ class BirthdayUpdateView(BirthdayMixin, UpdateView):
 
 
 # Добавляем миксин первым по списку родительских классов.
-class BirthdayCreateView(BirthdayMixin, CreateView):
+class BirthdayCreateView(LoginRequiredMixin, BirthdayMixin, CreateView):
     """Docstring."""
 
     model = Birthday
     # Не нужно описывать атрибуты: все они унаследованы от BirthdayMixin.
     form_class = BirthdayForm
 
+    def form_valid(self, form):
+        # Присвоить полю author объект пользователя из запроса.
+        form.instance.author = self.request.user
+        # Продолжить валидацию, описанную в форме.
+        return super().form_valid(form)
 
-class BirthdayDeleteView(BirthdayMixin, DeleteView):
+
+
+class BirthdayDeleteView(LoginRequiredMixin, BirthdayMixin, DeleteView):
     """Docstring."""
 
     model = Birthday
@@ -79,6 +89,11 @@ class BirthdayDetailView(DetailView):
         )
         # Возвращаем словарь контекста.
         return context
+
+
+@login_required
+def simpleView(request):
+    return HttpResponse("Simple view function", request)
 
 
 # # Добавим опциональный параметр pk.
