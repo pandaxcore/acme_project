@@ -1,3 +1,4 @@
+"""Docstring."""
 # users/forms.py
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
@@ -7,9 +8,12 @@ User = get_user_model()
 
 
 class CustomUserCreationForm(UserCreationForm):
+    """Docstring."""
 
     # Наследуем класс Meta от соответствующего класса родительской формы.
     # Так этот класс будет не перезаписан, а расширен.
     class Meta(UserCreationForm.Meta):
+        """Docstring."""
+
         model = User
         fields = ('username', 'bio')

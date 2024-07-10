@@ -47,11 +47,11 @@ class BirthdayCreateView(LoginRequiredMixin, BirthdayMixin, CreateView):
     form_class = BirthdayForm
 
     def form_valid(self, form):
+        """Docstring."""
         # Присвоить полю author объект пользователя из запроса.
         form.instance.author = self.request.user
         # Продолжить валидацию, описанную в форме.
         return super().form_valid(form)
-
 
 
 class BirthdayDeleteView(LoginRequiredMixin, BirthdayMixin, DeleteView):
@@ -92,8 +92,9 @@ class BirthdayDetailView(DetailView):
 
 
 @login_required
-def simpleView(request):
-    return HttpResponse("Simple view function", request)
+def simple_view(request):
+    """Docstring."""
+    return HttpResponse('Страница для залогиненных пользователей!')
 
 
 # # Добавим опциональный параметр pk.
