@@ -60,6 +60,8 @@ class Birthday(models.Model):
 
 
 class Congratulation(models.Model):
+    """Docstring."""
+
     text = models.TextField('Текст поздравления')
     birthday = models.ForeignKey(
         Birthday,
@@ -70,4 +72,6 @@ class Congratulation(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
+        """Docstring."""
+
         ordering = ('created_at',)

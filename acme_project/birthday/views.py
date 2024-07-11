@@ -12,7 +12,7 @@ from .models import Birthday, Congratulation
 from .utils import calculate_birthday_countdown
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
@@ -66,18 +66,22 @@ class BirthdayDeleteView(LoginRequiredMixin, BirthdayMixin, DeleteView):
 class BirthdayListView(ListView):
     """Docstring."""
 
-    # Указываем модель, с которой работает CBV...
     model = Birthday
-    # ...сортировку, которая будет применена при выводе списка объектов:
+    # По умолчанию этот класс
+    # выполняет запрос queryset = Birthday.objects.all(),
+    # но мы его переопределим:
+    queryset = Birthday.objects.prefetch_related('tags')
     ordering = 'id'
-    # ...и даже настройки пагинации:
-    paginate_by = 2
+    paginate_by = 10
 
 
 class BirthdayDetailView(DetailView):
+    """Docstring."""
+
     model = Birthday
 
     def get_context_data(self, **kwargs):
+        """Docstring."""
         context = super().get_context_data(**kwargs)
         context['birthday_countdown'] = calculate_birthday_countdown(
             self.object.birthday
@@ -120,23 +124,28 @@ def simple_view(request):
 
 # OR CBV
 class CongratulationCreateView(LoginRequiredMixin, CreateView):
+    """Docstring."""
+
     birthday = None
     model = Congratulation
     form_class = CongratulationForm
 
     # Переопределяем dispatch()
     def dispatch(self, request, *args, **kwargs):
+        """Docstring."""
         self.birthday = get_object_or_404(Birthday, pk=kwargs['pk'])
         return super().dispatch(request, *args, **kwargs)
 
     # Переопределяем form_valid()
     def form_valid(self, form):
+        """Docstring."""
         form.instance.author = self.request.user
         form.instance.birthday = self.birthday
         return super().form_valid(form)
 
     # Переопределяем get_success_url()
     def get_success_url(self):
+        """Docstring."""
         return reverse('birthday:detail', kwargs={'pk': self.birthday.pk})
 
 
