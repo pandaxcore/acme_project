@@ -11,9 +11,12 @@ from django.urls import reverse
 
 
 class Tag(models.Model):
+    """Docstring."""
+
     tag = models.CharField("Тег", max_length=20)
 
     def __str__(self):
+        """Docstring."""
         return self.tag
 
 
