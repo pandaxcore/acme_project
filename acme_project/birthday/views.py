@@ -65,12 +65,11 @@ class BirthdayDeleteView(LoginRequiredMixin, BirthdayMixin, DeleteView):
 # Наследуем класс от встроенного ListView:
 class BirthdayListView(ListView):
     """Docstring."""
-
+    
     model = Birthday
-    # По умолчанию этот класс
-    # выполняет запрос queryset = Birthday.objects.all(),
-    # но мы его переопределим:
-    queryset = Birthday.objects.prefetch_related('tags')
+    queryset = Birthday.objects.prefetch_related(
+        'tags'
+    ).select_related('author')
     ordering = 'id'
     paginate_by = 10
 
